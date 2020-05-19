@@ -1,0 +1,19 @@
+public class Main {
+private Combat Chicken ;
+private Combat player;
+
+
+public static void main(String[] args){
+    
+    Combat player = new Combat(100,50,1, "ali");
+    Combat Chicken = new Combat(150,25,1, "jahat");
+    Combat.battle(player,Chicken);
+        }
+
+
+    }
+    
+    
+
+
+

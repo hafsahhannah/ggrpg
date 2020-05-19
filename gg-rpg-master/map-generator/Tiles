@@ -1,0 +1,142 @@
+import java.util.Random;
+
+public class MapsBasic 
+{
+    private int size;
+    private char[][] tile;
+    private char[] symbolList = new char[10];
+    private int tileChosen;
+    private int noOfEnemy;
+
+    public MapsBasic() 
+    {
+        Random rand = new Random();
+        this.size = rand.nextInt(6) + 10; //max no. of rows of whole map = 15
+        this.tile = new char[size][size];
+        this.symbolList = new char[] {'@', 'Y', 'X', ';', '`', '.', ',', '^', '#', '*', '='};
+        this.tileChosen = 0;
+        this.noOfEnemy = 1; //random no. of enemy follows no. of rows
+    }
+    
+    public int getSize() //accessor 1
+    {
+        return size;
+    }
+
+    public char[] getSymbolList() //accessor 3
+    {
+        return symbolList;
+    }
+    
+    public void generateDisplayRandomSymbols() //generate and display symbols for tiles but excluding wall symbol
+    {
+        Random rand= new Random();
+        int randEnemy_i = rand.nextInt(size-3) + 1; //random enemy position from 1 to max size-2(2nd last column/row)
+        int randEnemy_j = rand.nextInt(size-3) + 1;
+        int randNpc_i = rand.nextInt(size-3) + 1;
+        int randNpc_j = rand.nextInt(size-3)+ 1;
+        
+        //x-coord
+        if(randEnemy_i >= randNpc_i)
+        {
+            while(randEnemy_i == randNpc_i || randEnemy_i == 2 || randNpc_i == 2 || randEnemy_i - 2 < 4 || randEnemy_i - randNpc_i < 4)
+            {
+            //check if x-coord enemy == npc OR any x == 2 OR distance between enemy & player < 4 OR distance between enemy & npc < 4, if same, generate BOTH new
+            randEnemy_i = rand.nextInt(size-3) + 1;
+            randNpc_i = rand.nextInt(size-3) + 1;
+            }
+        }
+        
+        else if(randEnemy_i < randNpc_i)
+        {
+            while(randEnemy_i == 2 || randNpc_i == 2 || randEnemy_i - 2 < 4 || randNpc_i - randEnemy_i < 4)
+            {
+            //check if any x == 2 OR distance between enemy & player < 4 OR distance between enemy & npc < 4, if same, generate BOTH new
+            randEnemy_i = rand.nextInt(size-3) + 1;
+            randNpc_i = rand.nextInt(size-3) + 1;
+            }
+        }
+        
+        //y-coord
+        if(randEnemy_j >= randNpc_j)
+        {
+            while(randEnemy_j == randNpc_j || randEnemy_j == 2 || randNpc_j == 2 || randEnemy_j < 4 || randEnemy_j - randNpc_j < 4)
+            {
+            //check if y-coord enemy == npc OR y == 2 OR distance between enemy & player < 4 OR distance between enemy & npc < 4, if same, generate BOTH new
+            randNpc_i = rand.nextInt(size-3) + 1;
+            randNpc_j = rand.nextInt(size-3)+ 1;
+            }
+        }
+        
+        else if(randEnemy_j < randNpc_j)
+        {
+            while(randEnemy_j == 2 || randNpc_j == 2 || randEnemy_j < 4 || randNpc_j - randEnemy_j < 4)
+            {
+            //check if y == 2 OR distance between enemy & player < 4 OR distance between enemy & npc < 4, if same, generate BOTH new
+            randNpc_i = rand.nextInt(size-3) + 1;
+            randNpc_j = rand.nextInt(size-3)+ 1;
+            }
+        }
+        //settle generate random position enemy & npc
+        
+        for(int i = 0; i < size; i++)
+        {
+            for(int j = 0; j < size; j++)
+            {
+                if(i >= 1 && i <= size - 2 && j >= 1 && j <= size - 2) //dalam wall
+                {
+                    if(i == randEnemy_i && j == randEnemy_j)
+                    {
+                        tile[i][j] = symbolList[1];
+                        System.out.print(tile[i][j] + " "); //display enemy 'Y'
+                    }
+                        
+                    else if(i == randNpc_i && j == randNpc_j)
+                    {
+                        tile[i][j] = symbolList[2];
+                        System.out.print(tile[i][j] + " "); //display NPC 'X'
+                    }
+                    
+                    else if(i == 2 && j == 2)
+                    {
+                        tile[i][j] = symbolList[0];
+                        System.out.print(tile[i][j] + " "); //display player '@'
+                    }
+                    
+                    else //for the remaining tiles (which is w/o @, X and Y)
+                    {
+                        tileChosen = rand.nextInt(8) + 3; // symbol index 3 -> 10
+                
+                        for(int k = 3; k < symbolList.length; k++) //from after npc 'X'
+                        {
+                            if(tileChosen == k) //other symbols beside enemy ('Y') & player '@'
+                            {
+                                tile[i][j] = symbolList[k];
+                                System.out.print(tile[i][j] + " ");
+                            }
+                        }
+                    }
+                }
+
+                if((i == 0 || i == size - 1) && j < size) //row 1 or last, AND all column
+                {
+                    tile[i][j] = '-';
+                    System.out.print(tile[i][j] + " "); //display dash '-'
+                }
+                    
+                if((j == 0 || j == size - 1) && (i >= 1 && i < size - 1)) //column 1 or last, AND row 2 until row
+                {
+                    tile[i][j] = '|';
+                    System.out.print(tile[i][j] + " ");
+                }
+            }
+            System.out.println("");
+        }        
+    }
+    
+    public static void main(String[] args) 
+    {
+        MapsBasic tiles = new MapsBasic();
+        tiles.generateDisplayRandomSymbols();
+    }    
+}
